@@ -35,7 +35,7 @@ def TextParser(PATH):
                 linelastmatch += 1
                 messagelist[linelastmatch].insert(0,match.group(1)) #Insert the date back into the list
 
-            elif match == None :
+            else:
                 #TODO : create function ContinueMessage
                 message = line.rstrip('\n')
                 messagelist[linelastmatch][2] = messagelist[linelastmatch][2] + message
