@@ -9,7 +9,7 @@ def TextParser(PATH):
             messagelist: Parsed list of each message
     """
 
-    textfile = open('C:\\Users\\Nicholas\\Documents\\VS Code Projects\\Text Analysis\\Katelyn_texts.txt','r', encoding="utf8")
+    textfile = open(PATH,'r', encoding="utf8")
     # accepts anything of the format '[MM/DD/YY AM|PM]'
     regex = r"(\[\d+/\d+/\d+\s\d+\:\d+\s[a-zA-Z]+\])"
 
@@ -27,20 +27,24 @@ def TextParser(PATH):
             convwhois = convwhois[2:-2]
         elif num > 1:
             if match != None:
-                #TODO : create function NewMessage(match)
-                message = line.replace(match.group(1), '') # Removes the date from message
-                message = message.rstrip('\n') 
-                sender,message = message.split(':',1) # Splits after the first colon
-                messagelist.append([sender,message])
+                # This creates a new message entry in the messagelist list variable
                 linelastmatch += 1
-                messagelist[linelastmatch].insert(0,match.group(1)) #Insert the date back into the list
 
+                message = line.replace(match.group(1), '') # Removes the date from message
+                message = message.rstrip('\n')
+                
+                timestamp = match.group(1)
+                sender,message = message.split(':',1) # Splits after the first colon
+                
+                messagelist.append({"timestamp" : timestamp, "sender" : sender, "message" : message})
             else:
-                #TODO : create function ContinueMessage
+                # This is when a text is multiple lines, it appends the message to the last new message
                 message = line.rstrip('\n')
-                messagelist[linelastmatch][2] = messagelist[linelastmatch][2] + message
+                messagelist[linelastmatch]["message"] = messagelist[linelastmatch]["message"] + message
 
     return messagelist
 
 if __name__ == "__main__":
-    TextParser('C:\\Users\\Nicholas\\Documents\\VS Code Projects\\Text Analysis\\Katelyn_texts.txt')
+    texts = TextParser('C:\\Users\\Nicholas\\Documents\\VS Code Projects\\Text Analysis\\test_texts.txt')
+
+    
