@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+import matplotlib.dates as plt
 
 def TextParser(PATH):
     """ 
@@ -25,6 +27,7 @@ def TextParser(PATH):
             # 2 words (the person's numbers)
             convwhois = line.split(' ')
             convwhois = convwhois[2:-2]
+            convwhois = ' '.join(convwhois)
         elif num > 1:
             if match != None:
                 # This creates a new message entry in the messagelist list variable
@@ -33,18 +36,18 @@ def TextParser(PATH):
                 message = line.replace(match.group(1), '') # Removes the date from message
                 message = message.rstrip('\n')
                 
-                timestamp = match.group(1)
+                timestamp_string = match.group(1)
+                timestamp = plt.date2num(datetime.strptime(timestamp_string[1:-1], "%m/%d/%y %I:%M %p" )) # Converts the timestampt string to date object and then matplotlib converts it to a float to be used in plotting
                 sender,message = message.split(':',1) # Splits after the first colon
                 
-                messagelist.append({"timestamp" : timestamp, "sender" : sender, "message" : message})
+                messagelist.append({"timestamp" : timestamp, "timestamp_s" : timestamp_string, "sender" : sender, "message" : message})
             else:
                 # This is when a text is multiple lines, it appends the message to the last new message
                 message = line.rstrip('\n')
                 messagelist[linelastmatch]["message"] = messagelist[linelastmatch]["message"] + message
 
-    return messagelist
+    return messagelist, convwhois
 
 if __name__ == "__main__":
     texts = TextParser('C:\\Users\\Nicholas\\Documents\\VS Code Projects\\Text Analysis\\test_texts.txt')
-
-    
+    print(texts)
